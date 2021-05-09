@@ -1,0 +1,132 @@
+import React, { useState } from 'react';
+import { StatusBar, FlatList, ScrollView } from 'react-native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Icon, DotsMenu, CheckItem, DreamCard } from '../../components';
+import { Wrapper, Title, COLORS, Row, Space, Content } from '../../styles';
+
+import { selectUser } from '../../store/Authenticate/Authenticate.selectors';
+import { logout } from '../../store/Authenticate/Authenticate.actions';
+
+export default function Home () {
+	// Redux
+	const dispatch = useDispatch()
+	const user = useSelector(selectUser)
+	
+	// Data
+	const menuOptions = [
+		{
+			id: '1',
+			name: 'Perfil',
+			action: () => alert('perfil'),
+			disabled: true,
+		},
+		{
+			id: '2',
+			name: 'Configurações',
+			action: () => alert('Configs'),
+			disabled: false,
+		},
+		{
+			id: '3',
+			name: 'Sair',
+			action: () => dispatch(logout()),
+			disabled: false,
+		},
+	]
+
+	const checkItems = [
+		{
+			id: '1',
+			title: 'Draw apple for 5 minutes',
+			checked: false,
+		},
+		{
+			id: '2',
+			title: 'Go out to Libros Coffee and look fot hot people improvision',
+			checked: false,
+		},
+		{
+			id: '3',
+			title: 'Check out updates on email',
+			checked: false,
+		}
+	]
+	
+	return (
+		<Wrapper
+			pt={15}
+			pl={15}
+			pr={15}
+			pb={2}
+			flex={1}
+			bg={COLORS.secundary}
+		>
+			<StatusBar backgroundColor={COLORS.secundary} />
+			<Row
+				align='center'
+				justify='space-between'
+			>
+				<Row
+					align='center'
+					justify='flex-start'
+				>
+					<Icon.User width={wp('13%')} height={hp('6%')} />
+					<Space width={10} />
+					<Title>{user.name}</Title>
+				</Row>
+				<DotsMenu
+					options={menuOptions}
+				/>
+			</Row>
+			<Space height={20} />
+			<ScrollView
+				horizontal={false}
+				showsVerticalScrollIndicator={false}
+			>
+				<Content>
+					<Row
+						align='center'
+						justify='space-between'
+					>
+						<Title>Lembretes</Title>
+						<Title
+							bold
+							color={COLORS.secundaryDark}
+						>
+							3
+						</Title>
+					</Row>
+					<Space height={10} />
+					<FlatList
+						data={checkItems}
+						keyExtractor={item => item.id}
+						renderItem={({ item }) => (
+							<CheckItem
+								title={item.title}
+								checked={item.checked}
+							/>
+						)}
+					/>
+					<Space height={20} />
+					<Row
+						align='center'
+						justify='space-between'
+					>
+						<Title>Sonhos Recentes</Title>
+						<Title
+							bold
+							color={COLORS.secundaryDark}
+						>
+							5
+						</Title>
+					</Row>
+					<Space height={20} />
+					<DreamCard />
+					<DreamCard />
+				</Content>
+			</ScrollView>
+		</Wrapper>
+	)
+}
