@@ -7,6 +7,7 @@ import { Wrapper, COLORS, Title, Space } from '../../../styles';
 import { Banner, Input, Button } from '../../../components';
 
 import { login } from '../../../store/Authenticate/Authenticate.actions';
+import { firebase } from '../../../firebase';
 
 export default function Login () {
 	// Redux
@@ -22,10 +23,26 @@ export default function Login () {
 
 	// Functions
 	function authenticate () {
-		dispatch(login({
-			name: 'Rafael Inácio',
-			birthday: '16/06/1998',
-		}))
+		firebase
+			.auth()
+			.signInWithEmailAndPassword('rafael.inacio0196@gmail.com', '123456')
+			.then(() => {
+				dispatch(login({
+					name: 'Rafael Inácio',
+					birthday: '16/06/1998',
+				}))
+			})
+			.catch(error => {
+				if (error.code === 'auth/email-already-in-use') {
+					console.log('That email address is already in use!')
+				}
+		
+				if (error.code === 'auth/invalid-email') {
+					console.log('That email address is invalid!')
+				}
+		
+				console.error(error)
+			})
 	}
 	
 	return (

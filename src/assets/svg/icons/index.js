@@ -11,8 +11,10 @@ import ThreeDots from './three-dots.svg';
 import Sun from './sun.svg';
 import SunRain from './sun-rain.svg';
 import NightRain from './night-rain.svg';
+import CalendarWeek from './calendar-week.svg';
 
 export {
+	CalendarWeek,
 	NightRain,
 	ArrowRight,
 	ArrowLeft,

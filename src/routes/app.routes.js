@@ -3,6 +3,7 @@ import { TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 // Pages
 import Home from '../pages/Home';
+import DreamHistory from '../pages/DreamHistory';
 
 // Stack
 const AuthStack = createStackNavigator();
@@ -34,6 +35,11 @@ const AuthRoutes = () => {
         name='Home'
         component={Home}
         options={{ headerShown: false }}
+      />
+      <AuthStack.Screen
+        name='DreamHistory'
+        component={DreamHistory}
+        options={horizontalAnimation}
       />
       {/* <AuthStack.Screen
         name='Settings'

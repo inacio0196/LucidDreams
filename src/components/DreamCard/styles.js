@@ -12,6 +12,7 @@ export const CardContainer = styled.View`
 export const ReadButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 `;
 
 export const CardDate = styled.Text`

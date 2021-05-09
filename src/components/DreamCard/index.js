@@ -5,7 +5,7 @@ import { CardContainer, CardDate, CardTitle, CardButtonText, ReadButton } from '
 import { Column, Row, Space } from '../../styles';
 import { Icon } from '../../components';
 
-export const DreamCard = () => {
+export const DreamCard = ({ onPressReadDream }) => {
   return (
     <CardContainer>
       <Row
@@ -29,6 +29,7 @@ export const DreamCard = () => {
       >
         <ReadButton
           hitSlop={{ right: 10, left: 10, top: 10, bottom: 10 }}
+          onPress={onPressReadDream}
         >
           <CardButtonText>Ler relato do sonho</CardButtonText>
           <Space width={10} />

@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
-import { StatusBar, FlatList, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StatusBar, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 
 import { Icon, DotsMenu, CheckItem, DreamCard } from '../../components';
-import { Wrapper, Title, COLORS, Row, Space, Content } from '../../styles';
+import { Wrapper, Title, COLORS, Row, Space, Content, SimpleText } from '../../styles';
 
 import { selectUser } from '../../store/Authenticate/Authenticate.selectors';
 import { logout } from '../../store/Authenticate/Authenticate.actions';
 
+import firebase from '../../firebase';
+
 export default function Home () {
+	// Navigation
+	const navigation = useNavigation()
 	// Redux
 	const dispatch = useDispatch()
 	const user = useSelector(selectUser)
-	
+	// States
+	const [realityTests, setRealityTests] = useState([])
 	// Data
 	const menuOptions = [
 		{
@@ -31,7 +37,17 @@ export default function Home () {
 		{
 			id: '3',
 			name: 'Sair',
-			action: () => dispatch(logout()),
+			action: () => {				
+				firebase
+					.auth()
+					.signOut()
+					.then(() => {
+						dispatch(logout())
+					})
+					.catch(error => {
+						console.log(error)
+					})
+			},
 			disabled: false,
 		},
 	]
@@ -51,8 +67,45 @@ export default function Home () {
 			id: '3',
 			title: 'Check out updates on email',
 			checked: false,
-		}
+		},
 	]
+
+	// Effects
+	useEffect(() => {
+		getRealityTests()
+	}, [])
+	
+	// Functions
+	async function getRealityTests () {
+		await firebase
+			.database()
+			.ref('reality-test')
+			.once('value', snapshot => {
+				console.log(snapshot.val())
+			})
+		// console.log({snap: snapshot.docs})
+		// database
+		// 	.collection('teste')
+		// 	.get()
+		// 	.then(snapshot => {
+		// 		console.log(snapshot.docs)
+		// 	})
+			// .onSnapshot(query => {
+			// 	console.log({query})
+			// 	const items = []
+			// 	query.forEach(doc => {
+			// 		console.log({doc})
+			// 		items.push({
+			// 			...doc.data(),
+			// 			id: doc.id,
+			// 		})
+			// 	})
+			// })
+	}
+
+	function goToDreamHistory () {
+		navigation.navigate('DreamHistory')
+	}
 	
 	return (
 		<Wrapper
@@ -99,16 +152,15 @@ export default function Home () {
 						</Title>
 					</Row>
 					<Space height={10} />
-					<FlatList
-						data={checkItems}
-						keyExtractor={item => item.id}
-						renderItem={({ item }) => (
+					{
+						checkItems.map(item => (
 							<CheckItem
+								key={item.id}
 								title={item.title}
 								checked={item.checked}
 							/>
-						)}
-					/>
+						))
+					}
 					<Space height={20} />
 					<Row
 						align='center'
@@ -123,8 +175,25 @@ export default function Home () {
 						</Title>
 					</Row>
 					<Space height={20} />
-					<DreamCard />
-					<DreamCard />
+					<DreamCard
+						onPressReadDream={goToDreamHistory}
+					/>
+					<Space height={20} />
+					<Row
+						align='center'
+						justify='flex-end'
+					>
+						<TouchableOpacity
+							onPress={goToDreamHistory}
+						>
+							<SimpleText
+								bold
+								fontsize={4}
+							>
+								Ver Histórico Completo
+							</SimpleText>
+						</TouchableOpacity>
+					</Row>
 				</Content>
 			</ScrollView>
 		</Wrapper>

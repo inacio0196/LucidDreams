@@ -21,6 +21,7 @@ export const InputComponent = styled.TextInput.attrs({
 	border-radius: ${wp('5%')}px;
 	padding: ${wp('4%')}px;
 	font-size: ${wp('4%')}px;
+	color: ${COLORS.white};
 	${props => props.secureActive ? `width: ${wp('80%')}px` : `width: ${wp('90%')}px`};
 `;
 

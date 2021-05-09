@@ -11,6 +11,7 @@ export const COLORS = {
 	error: '#f44336',
 	secundary: '#FF3C52',
 	secundaryDark: '#E82B41',
+	blue: '#2073DD',
 }
 
 export const GlobalProps = styled.View`
@@ -37,6 +38,12 @@ export const GlobalProps = styled.View`
 export const Title = styled.Text`
 	color: ${({ color }) => color ? color : COLORS.white};
 	font-size: ${wp('8%')}px;
+	${({ bold }) => bold ? 'font-weight: bold' : null};
+`;
+
+export const SimpleText = styled.Text`
+	color: ${({ color }) => color ? color : COLORS.white};
+	${({ fontsize }) => fontsize ? `font-size: ${wp(`${fontsize}%`)}px;` : null}
 	${({ bold }) => bold ? 'font-weight: bold' : null};
 `;
 
