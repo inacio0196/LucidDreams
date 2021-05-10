@@ -10,7 +10,7 @@ import { Wrapper, Title, COLORS, Row, Space, Content, SimpleText } from '../../s
 import { selectUser } from '../../store/Authenticate/Authenticate.selectors';
 import { logout } from '../../store/Authenticate/Authenticate.actions';
 
-import database from '../../firebase';
+import firestore from '@react-native-firebase/firestore';
 
 export default function Home () {
 	// Navigation
@@ -77,9 +77,10 @@ export default function Home () {
 	
 	// Functions
 	async function getRealityTests () {
-		const data = await database.collection('reallity-checks').get()
+		const reality = await firestore().collection('reality-checks').get()
+		console.log({reality})
 
-		console.log({data})
+		// console.log({data})
 			// .onSnapshot(query => {
 			// 	console.log({query})
 			// 	const items = []
