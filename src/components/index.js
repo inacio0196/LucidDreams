@@ -6,3 +6,4 @@ export * from './CheckItem';
 export * from './DreamCard';
 export * from './BackButton';
 export * from './CalendarWeek';
+export * from './PageLoader';

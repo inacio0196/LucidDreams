@@ -9,7 +9,9 @@ import { Wrapper, Title, COLORS, Row, Space, Content, SimpleText } from '../../s
 
 import { selectUser } from '../../store/Authenticate/Authenticate.selectors';
 import { logout } from '../../store/Authenticate/Authenticate.actions';
+import { getItemsOnQuery } from '../../utils/firestore';
 
+import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
 export default function Home () {
@@ -19,7 +21,7 @@ export default function Home () {
 	const dispatch = useDispatch()
 	const user = useSelector(selectUser)
 	// States
-	const [realityTests, setRealityTests] = useState([])
+	const [realityChecks, setRealityChecks] = useState([])
 	// Data
 	const menuOptions = [
 		{
@@ -38,8 +40,7 @@ export default function Home () {
 			id: '3',
 			name: 'Sair',
 			action: () => {				
-				firebase
-					.auth()
+					auth()
 					.signOut()
 					.then(() => {
 						dispatch(logout())
@@ -52,24 +53,6 @@ export default function Home () {
 		},
 	]
 
-	const checkItems = [
-		{
-			id: '1',
-			title: 'Draw apple for 5 minutes',
-			checked: false,
-		},
-		{
-			id: '2',
-			title: 'Go out to Libros Coffee and look fot hot people improvision',
-			checked: false,
-		},
-		{
-			id: '3',
-			title: 'Check out updates on email',
-			checked: false,
-		},
-	]
-
 	// Effects
 	useEffect(() => {
 		getRealityTests()
@@ -77,21 +60,14 @@ export default function Home () {
 	
 	// Functions
 	async function getRealityTests () {
-		const reality = await firestore().collection('reality-checks').get()
-		console.log({reality})
+		firestore()
+			.collection('reality-checks')
+			.get()
+			.then(snapshot => {
+				const realityChecks = getItemsOnQuery(snapshot)
 
-		// console.log({data})
-			// .onSnapshot(query => {
-			// 	console.log({query})
-			// 	const items = []
-			// 	query.forEach(doc => {
-			// 		console.log({doc})
-			// 		items.push({
-			// 			...doc.data(),
-			// 			id: doc.id,
-			// 		})
-			// 	})
-			// })
+				setRealityChecks(realityChecks)
+			})
 	}
 
 	function goToDreamHistory () {
@@ -139,12 +115,12 @@ export default function Home () {
 							bold
 							color={COLORS.secundaryDark}
 						>
-							3
+							{realityChecks.length}
 						</Title>
 					</Row>
 					<Space height={10} />
 					{
-						checkItems.map(item => (
+						realityChecks.map(item => (
 							<CheckItem
 								key={item.id}
 								title={item.title}

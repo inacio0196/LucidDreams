@@ -7,8 +7,8 @@ export const CheckItem = ({ checked, title, onPress }) => {
   function shortenText (text) {
     let shorten = text
     
-    if (shorten.length >= 41) {
-      shorten =  shorten.substr(0, 41) + '...'
+    if (shorten.length >= 37) {
+      shorten =  shorten.substr(0, 37) + '...'
     }
 
     return shorten

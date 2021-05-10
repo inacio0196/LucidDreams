@@ -7,7 +7,7 @@ import { Wrapper, COLORS, Title, Space } from '../../../styles';
 import { Banner, Input, Button } from '../../../components';
 
 import { login } from '../../../store/Authenticate/Authenticate.actions';
-import { firebase } from '../../../firebase';
+import auth from '@react-native-firebase/auth';
 
 export default function Login () {
 	// Redux
@@ -23,8 +23,7 @@ export default function Login () {
 
 	// Functions
 	function authenticate () {
-		firebase
-			.auth()
+			auth()
 			.signInWithEmailAndPassword('rafael.inacio0196@gmail.com', '123456')
 			.then(() => {
 				dispatch(login({
