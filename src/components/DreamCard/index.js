@@ -5,7 +5,7 @@ import { CardContainer, CardDate, CardTitle, CardButtonText, ReadButton } from '
 import { Column, Row, Space } from '../../styles';
 import { Icon } from '../../components';
 
-export const DreamCard = ({ onPressReadDream }) => {
+export const DreamCard = ({ onPressReadDream, isRecent }) => {
   return (
     <CardContainer>
       <Row
@@ -14,7 +14,7 @@ export const DreamCard = ({ onPressReadDream }) => {
       >
         <Column>
           <CardDate
-            isRecent={true}
+            isRecent={isRecent}
           >
             2 years and 13 days
           </CardDate>
@@ -31,7 +31,7 @@ export const DreamCard = ({ onPressReadDream }) => {
           hitSlop={{ right: 10, left: 10, top: 10, bottom: 10 }}
           onPress={onPressReadDream}
         >
-          <CardButtonText>Ler relato do sonho</CardButtonText>
+          <CardButtonText>Ler anotação</CardButtonText>
           <Space width={10} />
           <Icon.ArrowRight fill='#000' width={wp('6%')} height={hp('3%')} />
         </ReadButton>

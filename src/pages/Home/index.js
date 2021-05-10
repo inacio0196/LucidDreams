@@ -176,6 +176,7 @@ export default function Home () {
 					</Row>
 					<Space height={20} />
 					<DreamCard
+						isRecent={true}
 						onPressReadDream={goToDreamHistory}
 					/>
 					<Space height={20} />
@@ -190,7 +191,7 @@ export default function Home () {
 								bold
 								fontsize={4}
 							>
-								Ver Histórico Completo
+								Ver Histórico
 							</SimpleText>
 						</TouchableOpacity>
 					</Row>

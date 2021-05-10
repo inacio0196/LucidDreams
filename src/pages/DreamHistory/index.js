@@ -2,9 +2,18 @@ import React from 'react';
 import { StatusBar } from 'react-native';
 
 import { Wrapper, Title, COLORS, Row, Space, Content, SimpleText } from '../../styles';
-import { BackButton, CalendarWeek } from '../../components';
- 
+import { BackButton, CalendarWeek, DreamCard, DotsMenu } from '../../components';
+
 export default function DreamHistory () {
+  // Data
+  const menuOptions = [
+    {
+      id: '01',
+      name: 'Registrar sonho',
+      action: () => {},
+    },
+  ]
+
   return (
     <Wrapper
       flex={1}
@@ -15,14 +24,29 @@ export default function DreamHistory () {
         p={15}
       >
         <BackButton />
-        <Title>Histórico de Sonhos</Title>
-        <Space height={20} />
+        <Row
+          justify='space-between'
+        >
+          <Title>Histórico de Sonhos</Title>
+          <DotsMenu
+            options={menuOptions}
+          />
+        </Row>
+        <Space height={10} />
       </Content>
       <CalendarWeek />
       <Content
         p={15}
       >
-        <Title>Resto do app</Title>
+        <SimpleText
+          bold
+          fontsize={5}
+        >
+          Relatos do dia
+        </SimpleText>
+        <DreamCard
+          isRecent={false}
+        />
       </Content>
     </Wrapper>
   )

@@ -16,7 +16,7 @@ export const ReadButton = styled.TouchableOpacity`
 `;
 
 export const CardDate = styled.Text`
-  ${({ isRecent }) => isRecent ? `color: ${COLORS.secundary}` : null}
+  ${({ isRecent }) => isRecent ? `color: ${COLORS.secundary}` : `${COLORS.blue}`}
 `;
 
 export const CardButtonText = styled.Text`

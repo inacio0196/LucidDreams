@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { FlatList } from 'react-native';
+import { FlatList, Dimensions } from 'react-native';
 import dayjs from 'dayjs';
 
 import { DayContainer } from './styles';
@@ -13,9 +13,11 @@ dayjs.locale(localePtBr)
 export const CalendarWeek = () => {
   // States
   const [month, setMonth] = useState([])
+  // FrontStates
+  const [showDays, setShowDays] = useState(false)
   
   // Constants
-  const ITEM_WIDTH = 20
+  const SCREEN_WIDTH = Dimensions.get('window').width
   const ACTUAL_MONTH_NICK = dayjs().format('MMM')
   const ACTUAL_DAY = dayjs().format('D')
   const ACTUAL_MONTH_NAME = dayjs().format('MMMM')
@@ -47,17 +49,23 @@ export const CalendarWeek = () => {
         date: dayjs(day),
         isToday: dayjs(day).isToday(),
       }))
-    
-    const today = daysOfMonth.filter(day => day.isToday)
+
+    setMonth(daysOfMonth)
+  }
+
+  function goToCurrentDate () {
+    const todayIndex = month.findIndex(day => day.isToday)
     
     flatListRef.current.scrollToItem({
       animated: true,
       viewPosition: 0,
-      item: today[0]
+      item: month[todayIndex - 2]
     })
-
-    setMonth(daysOfMonth)
   }
+
+  setTimeout(() => {
+    goToCurrentDate()
+  }, 100)
   
   return (
     <Content>
@@ -93,6 +101,12 @@ export const CalendarWeek = () => {
         horizontal
         ref={flatListRef}
         showsHorizontalScrollIndicator={false}
+        snapToAlignment='center'
+        getItemLayout={(data, index) => ({
+          // Max 5 items visibles at once
+          length: SCREEN_WIDTH / 5, offset: SCREEN_WIDTH / 5 * index, index
+        })}
+        snapToInterval={SCREEN_WIDTH / 5}
         keyExtractor={item => item.key}
         renderItem={({ item }) => (
           <DayContainer
@@ -105,6 +119,7 @@ export const CalendarWeek = () => {
               {item.day_of_month}
             </Title>
             <SimpleText
+              bold
               color={item.isToday ? COLORS.blue : 'white'}
             >
               {item.day_nick}
