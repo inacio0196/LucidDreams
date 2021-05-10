@@ -10,7 +10,7 @@ import { Wrapper, Title, COLORS, Row, Space, Content, SimpleText } from '../../s
 import { selectUser } from '../../store/Authenticate/Authenticate.selectors';
 import { logout } from '../../store/Authenticate/Authenticate.actions';
 
-import firebase from '../../firebase';
+import database from '../../firebase';
 
 export default function Home () {
 	// Navigation
@@ -77,19 +77,9 @@ export default function Home () {
 	
 	// Functions
 	async function getRealityTests () {
-		await firebase
-			.database()
-			.ref('reality-test')
-			.once('value', snapshot => {
-				console.log(snapshot.val())
-			})
-		// console.log({snap: snapshot.docs})
-		// database
-		// 	.collection('teste')
-		// 	.get()
-		// 	.then(snapshot => {
-		// 		console.log(snapshot.docs)
-		// 	})
+		const data = await database.collection('reallity-checks').get()
+
+		console.log({data})
 			// .onSnapshot(query => {
 			// 	console.log({query})
 			// 	const items = []
