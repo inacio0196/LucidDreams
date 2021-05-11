@@ -26,9 +26,9 @@ export default function Home () {
 	const menuOptions = [
 		{
 			id: '1',
-			name: 'Perfil',
-			action: () => alert('perfil'),
-			disabled: true,
+			name: 'Registrar sonho',
+			action: () => navigation.navigate('RegisterDream'),
+			disabled: false,
 		},
 		{
 			id: '2',

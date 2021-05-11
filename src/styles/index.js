@@ -66,6 +66,14 @@ export const Content = styled(GlobalProps)`
 	${({ bg }) => bg ? `background-color: ${bg};` : null}
 `;
 
+export const Header = styled(GlobalProps)`
+	/* Flex */
+	${({ flex }) => flex ? `flex: ${flex};` : null}
+	${({ align }) => align ? `align-items: ${align};` : null}
+	${({ justify }) => justify ? `justify-content: ${justify};` : null}
+	${({ bg }) => bg ? `background-color: ${bg};` : null}
+`;
+
 export const Box = styled(GlobalProps)`
 	${({ direction }) => direction ? `flex-direction: ${direction};` : null}
 	${({ align }) => align ? `align-items: ${align};` : null}
