@@ -31,7 +31,7 @@ const horizontalAnimation = {
 // AuthRoutes
 const AuthRoutes = () => {
   return (
-    <AuthStack.Navigator initialRouteName='RegisterDream'>
+    <AuthStack.Navigator initialRouteName='Home'>
       <AuthStack.Screen
         name='Home'
         component={Home}

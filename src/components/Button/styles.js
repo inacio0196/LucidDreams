@@ -14,5 +14,5 @@ export const TouchableButton = styled.TouchableOpacity`
 export const ButtonTitle = styled.Text`
 	font-size: ${wp('5%')}px;
 	font-weight: bold;
-	color: ${COLORS.purple}
+	color: ${({ textcolor }) => textcolor ? textcolor : COLORS.purple}
 `;

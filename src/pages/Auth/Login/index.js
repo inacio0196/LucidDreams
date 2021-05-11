@@ -29,6 +29,7 @@ export default function Login () {
 				dispatch(login({
 					name: 'Rafael Inácio',
 					birthday: '16/06/1998',
+					userID: auth().currentUser.uid,
 				}))
 			})
 			.catch(error => {
