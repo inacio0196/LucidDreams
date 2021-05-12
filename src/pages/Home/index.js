@@ -57,7 +57,7 @@ export default function Home () {
 	useEffect(() => {
 		getRealityTests()
 	}, [])
-	
+
 	// Functions
 	async function getRealityTests () {
 		firestore()
