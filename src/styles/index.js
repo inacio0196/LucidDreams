@@ -56,6 +56,7 @@ export const Wrapper = styled(GlobalProps)`
 	${({ align }) => align ? `align-items: ${align};` : null}
 	${({ justify }) => justify ? `justify-content: ${justify};` : null}
 	${({ bg }) => bg ? `background-color: ${bg};` : null}
+	${({ position }) => position ? `position: ${position};` : null} 
 `;
 
 export const Content = styled(GlobalProps)`

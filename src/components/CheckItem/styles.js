@@ -18,7 +18,7 @@ export const CheckText = styled.Text`
 `;
 
 export const CheckBox = styled.View`
-  background-color: ${({ checked }) => checked ? COLORS.white : 'transparent'};
+  background-color: ${({ status }) => status === 'done' ? COLORS.white : 'transparent'};
   height: ${wp('4.5%')}px;
   width: ${wp('4.5%')}px;
   border-radius: ${wp('1%')}px;

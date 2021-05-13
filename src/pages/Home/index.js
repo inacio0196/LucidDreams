@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { StatusBar, ActivityIndicator, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import dayjs from 'dayjs';
 
 import { Icon, DotsMenu, CheckItem, DreamCard } from '../../components';
 import { Wrapper, Title, COLORS, Row, Space, Content, SimpleText } from '../../styles';
@@ -22,6 +23,9 @@ export default function Home () {
 	const user = useSelector(selectUser)
 	// States
 	const [realityChecks, setRealityChecks] = useState([])
+	const [todayDream, setTodayDream] = useState(null)
+	// FrontStates
+	const [modalVisible, setModalVisible] = useState(false)
 	// Data
 	const menuOptions = [
 		{
@@ -51,17 +55,20 @@ export default function Home () {
 			},
 			disabled: false,
 		},
-	]
+	]	
 
 	// Effects
 	useEffect(() => {
 		getRealityTests()
+		getTodayDream()
 	}, [])
 
 	// Functions
-	async function getRealityTests () {
+	function getRealityTests () {
 		firestore()
-			.collection('reality-checks')
+			.collection('today-reality-checks')
+			.doc(user.userID)
+			.collection('checks')
 			.get()
 			.then(snapshot => {
 				const realityChecks = getItemsOnQuery(snapshot)
@@ -70,10 +77,31 @@ export default function Home () {
 			})
 	}
 
+	function getTodayDream () {
+		const today = dayjs().format('YYYY-MM-DD')
+
+		firestore()
+			.collection('dreams')
+			.where('dreamUserID', '==', user.userID)
+			.where('createdDate', '==', today)
+			.get()
+			.then(snapshot => {
+				const todayDream = getItemsOnQuery(snapshot)
+
+				if (todayDream.length > 0) {
+					setTodayDream(todayDream[0])
+				}
+			})
+	}
+
+	function handleRealityCheckClick () {
+		setModalVisible(true)
+	}
+
 	function goToDreamHistory () {
 		navigation.navigate('DreamHistory')
 	}
-	
+
 	return (
 		<Wrapper
 			pt={15}
@@ -120,32 +148,71 @@ export default function Home () {
 					</Row>
 					<Space height={10} />
 					{
-						realityChecks.map(item => (
+						realityChecks.length > 0
+						? realityChecks.map(item => (
 							<CheckItem
 								key={item.id}
+								onPress={() => handleRealityCheckClick()}
 								title={item.title}
-								checked={item.checked}
+								description={item.description}
+								status={item.status}
 							/>
 						))
+						: (
+							<>
+								<Space height={20} />
+								<Row
+									justify='center'
+								>
+									<ActivityIndicator
+										animating={true}
+										color={COLORS.white}
+										size={wp('15%')}
+									/>
+								</Row>
+								<Space height={20} />
+							</>
+						)
 					}
 					<Space height={20} />
 					<Row
 						align='center'
 						justify='space-between'
 					>
-						<Title>Sonhos Recentes</Title>
+						<Title>Hoje</Title>
 						<Title
 							bold
-							color={COLORS.secundaryDark}
 						>
-							5
+							{dayjs().format('dddd D')}
 						</Title>
 					</Row>
 					<Space height={20} />
-					<DreamCard
-						isRecent={true}
-						onPressReadDream={goToDreamHistory}
-					/>
+					{
+						todayDream
+						? (
+							<DreamCard
+								isRecent={true}
+								title={todayDream.title}
+								createdAt={todayDream.createdAt}
+								climate={todayDream.dreamClimate}
+								onPressReadDream={goToDreamHistory}
+							/>
+						)
+						: (
+							<Row
+								align='center'
+								justify='center'
+								mt={20}
+							>
+								<SimpleText
+									color='#FFF9'
+									fontsize={4}
+								>
+									Você não possuí nenhum sonho cadastrado hoje
+								</SimpleText>
+							</Row>
+						)
+					}
 					<Space height={20} />
 					<Row
 						align='center'
@@ -156,14 +223,40 @@ export default function Home () {
 						>
 							<SimpleText
 								bold
-								fontsize={4}
+								fontsize={5}
 							>
 								Ver Histórico
 							</SimpleText>
 						</TouchableOpacity>
 					</Row>
 				</Content>
+				<Space height={30} />
 			</ScrollView>
+
+			
+				<Modal
+					animationType='slide'
+					transparent={true}
+					visible={modalVisible}
+					onRequestClose={() => {
+						setModalVisible(!modalVisible);
+					}}
+				>
+					<Wrapper
+						align='center'
+						flex={1}
+						justify='center'
+						bg={COLORS.white}
+						mt={200}
+						mb={200}
+						ml={30}
+						mr={30}
+						radius={20}
+					>
+						<SimpleText color='#000'>Modalllll ai ai</SimpleText>
+					</Wrapper>
+				</Modal>
+			
 		</Wrapper>
 	)
 }
