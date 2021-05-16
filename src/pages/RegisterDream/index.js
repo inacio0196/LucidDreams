@@ -32,9 +32,10 @@ export default function RegisterDream () {
         description,
         isLucid,
         dreamClimate,
+        createdDate: dayjs().format('YYYY-MM-DD'),
         dreamUserID: user.userID,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: dayjs().format(),
+        updatedAt: dayjs().format(),
       })
   }
 

@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import { COLORS } from '../../styles';
 
 export const TouchableButton = styled.TouchableOpacity`
-	background-color: ${COLORS.white};
+	background-color: ${({ backgroundColor }) => backgroundColor ? backgroundColor : COLORS.white};
 	padding: ${wp('3%')}px;
 	${({ block }) => block ? 'width: 100%' : null};
 	align-items: center;

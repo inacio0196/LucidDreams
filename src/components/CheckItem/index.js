@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CheckText, CheckContainer, CheckBox, CheckBoxContainer } from './styles';
 
-export const CheckItem = ({ checked, title, onPress }) => {
+export const CheckItem = ({ status, title, onPress }) => {
   // functions
   function shortenText (text) {
     let shorten = text
@@ -19,7 +19,7 @@ export const CheckItem = ({ checked, title, onPress }) => {
       onPress={onPress}
     >
       <CheckBoxContainer>
-        <CheckBox checked={checked} />
+        <CheckBox status={status} />
       </CheckBoxContainer>
       <CheckText>{shortenText(title)}</CheckText>
     </CheckContainer>

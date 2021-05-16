@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { StatusBar, ActivityIndicator, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import dayjs from 'dayjs';
 
-import { Icon, DotsMenu, CheckItem, DreamCard } from '../../components';
+import { Icon, DotsMenu, CheckItem, DreamCard, Button } from '../../components';
 import { Wrapper, Title, COLORS, Row, Space, Content, SimpleText } from '../../styles';
 
 import { selectUser } from '../../store/Authenticate/Authenticate.selectors';
@@ -22,6 +23,13 @@ export default function Home () {
 	const user = useSelector(selectUser)
 	// States
 	const [realityChecks, setRealityChecks] = useState([])
+	const [todayDream, setTodayDream] = useState(null)
+	const [modalTitle, setModalTitle] = useState('')
+	const [modalDescription, setModalDescription] = useState('')
+	const [modalStatus, setModalStatus] = useState('todo')
+	const [realityCheckId, setRealityCheckId] = useState('')
+	// FrontStates
+	const [modalVisible, setModalVisible] = useState(false)
 	// Data
 	const menuOptions = [
 		{
@@ -51,29 +59,76 @@ export default function Home () {
 			},
 			disabled: false,
 		},
-	]
+	]	
 
 	// Effects
 	useEffect(() => {
 		getRealityTests()
+		getTodayDream()
 	}, [])
 
 	// Functions
-	async function getRealityTests () {
+	function getRealityTests () {
 		firestore()
-			.collection('reality-checks')
-			.get()
-			.then(snapshot => {
-				const realityChecks = getItemsOnQuery(snapshot)
+			.collection('today-reality-checks')
+			.doc(user.userID)
+			.collection('checks')
+			.onSnapshot(snap => {
+				if (snap.docs.length > 0) {
+					const realityChecks = getItemsOnQuery(snap)
 
-				setRealityChecks(realityChecks)
+					setRealityChecks(realityChecks)
+				}
 			})
+	}
+
+	function getTodayDream () {
+		const today = dayjs().format('YYYY-MM-DD')
+
+		firestore()
+			.collection('dreams')
+			.where('dreamUserID', '==', user.userID)
+			.where('createdDate', '==', today)
+			.onSnapshot(snap => {
+				if (snap.docs.length > 0) {
+					const todayDream = getItemsOnQuery(snap)
+
+					if (todayDream.length > 0) {
+						setTodayDream(todayDream[0])
+					}
+				}
+			})
+	}
+
+	function handleRealityCheck () {
+		firestore()
+			.collection('today-reality-checks')
+			.doc(user.userID)
+			.collection('checks')
+			.doc(realityCheckId)
+			.update({
+				status: 'done'
+			})
+			.then(() => {
+				alert('conseguiu')
+				setModalVisible(true)
+			})
+			.catch(error => console.log(error))
+
+	}
+
+	function handleRealityCheckClick (title, description, realityCheckID, status) {
+		setModalTitle(title)
+		setModalDescription(description)
+		setModalStatus(status)
+		setRealityCheckId(realityCheckID)
+		setModalVisible(true)
 	}
 
 	function goToDreamHistory () {
 		navigation.navigate('DreamHistory')
 	}
-	
+
 	return (
 		<Wrapper
 			pt={15}
@@ -120,32 +175,71 @@ export default function Home () {
 					</Row>
 					<Space height={10} />
 					{
-						realityChecks.map(item => (
+						realityChecks.length > 0
+						? realityChecks.map(item => (
 							<CheckItem
 								key={item.id}
+								onPress={() => handleRealityCheckClick(item.title, item.description, item.id, item.status)}
 								title={item.title}
-								checked={item.checked}
+								description={item.description}
+								status={item.status}
 							/>
 						))
+						: (
+							<>
+								<Space height={20} />
+								<Row
+									justify='center'
+								>
+									<ActivityIndicator
+										animating={true}
+										color={COLORS.white}
+										size={wp('15%')}
+									/>
+								</Row>
+								<Space height={20} />
+							</>
+						)
 					}
 					<Space height={20} />
 					<Row
 						align='center'
 						justify='space-between'
 					>
-						<Title>Sonhos Recentes</Title>
+						<Title>Hoje</Title>
 						<Title
 							bold
-							color={COLORS.secundaryDark}
 						>
-							5
+							{dayjs().format('dddd D')}
 						</Title>
 					</Row>
 					<Space height={20} />
-					<DreamCard
-						isRecent={true}
-						onPressReadDream={goToDreamHistory}
-					/>
+					{
+						todayDream
+						? (
+							<DreamCard
+								isRecent={true}
+								title={todayDream.title}
+								createdAt={todayDream.createdAt}
+								climate={todayDream.dreamClimate}
+								onPressReadDream={goToDreamHistory}
+							/>
+						)
+						: (
+							<Row
+								align='center'
+								justify='center'
+								mt={20}
+							>
+								<SimpleText
+									color='#FFF9'
+									fontsize={4}
+								>
+									Você não possuí nenhum sonho cadastrado hoje
+								</SimpleText>
+							</Row>
+						)
+					}
 					<Space height={20} />
 					<Row
 						align='center'
@@ -156,14 +250,77 @@ export default function Home () {
 						>
 							<SimpleText
 								bold
-								fontsize={4}
+								fontsize={5}
 							>
 								Ver Histórico
 							</SimpleText>
 						</TouchableOpacity>
 					</Row>
 				</Content>
+				<Space height={30} />
 			</ScrollView>
+
+			<Modal
+				animationType='slide'
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					setModalVisible(!modalVisible);
+				}}
+			>
+				<Wrapper
+					align='center'
+					bg={COLORS.white}
+					mt={200}
+					mb={200}
+					ml={30}
+					mr={30}
+					p={15}
+					radius={15}
+					borderColor={COLORS.secundary}
+					borderWidth={2}
+				>
+					<Row
+						align='center'
+						block
+						justify='flex-end'
+					>
+						<TouchableOpacity
+							color='#000'
+							hitSlop={{ right: 10, top: 10, left: 10, bottom: 10 }}
+							onPress={() => setModalVisible(false)}
+						>
+							<Icon.Close fill={COLORS.secundary} width={wp('6%')} height={hp('6%')} />
+						</TouchableOpacity>
+					</Row>
+					<Space height={10} />
+					<Title
+						color={COLORS.secundary}
+						fontsize={6}
+						textAlign='center'
+					>
+						{modalTitle}
+					</Title>
+					<Space height={20} />
+					<SimpleText
+						color='#000'
+						fontsize={4}
+					>
+						{modalDescription}
+					</SimpleText>
+					<Space height={20} />
+					<Row>
+						<Button
+							title='Feito!'
+							backgroundColor={COLORS.secundary}
+							textcolor={COLORS.white}
+							onPress={handleRealityCheck}
+							disabled={modalStatus === 'done'}
+						/>
+					</Row>
+				</Wrapper>
+			</Modal>
+			
 		</Wrapper>
 	)
 }
