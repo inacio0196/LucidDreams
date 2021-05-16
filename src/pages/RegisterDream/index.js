@@ -34,8 +34,8 @@ export default function RegisterDream () {
         dreamClimate,
         createdDate: dayjs().format('YYYY-MM-DD'),
         dreamUserID: user.userID,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: dayjs().format(),
+        updatedAt: dayjs().format(),
       })
   }
 

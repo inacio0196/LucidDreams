@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import dayjs from 'dayjs';
 
-import { Icon, DotsMenu, CheckItem, DreamCard } from '../../components';
+import { Icon, DotsMenu, CheckItem, DreamCard, Button } from '../../components';
 import { Wrapper, Title, COLORS, Row, Space, Content, SimpleText } from '../../styles';
 
 import { selectUser } from '../../store/Authenticate/Authenticate.selectors';
@@ -24,6 +24,10 @@ export default function Home () {
 	// States
 	const [realityChecks, setRealityChecks] = useState([])
 	const [todayDream, setTodayDream] = useState(null)
+	const [modalTitle, setModalTitle] = useState('')
+	const [modalDescription, setModalDescription] = useState('')
+	const [modalStatus, setModalStatus] = useState('todo')
+	const [realityCheckId, setRealityCheckId] = useState('')
 	// FrontStates
 	const [modalVisible, setModalVisible] = useState(false)
 	// Data
@@ -69,11 +73,12 @@ export default function Home () {
 			.collection('today-reality-checks')
 			.doc(user.userID)
 			.collection('checks')
-			.get()
-			.then(snapshot => {
-				const realityChecks = getItemsOnQuery(snapshot)
+			.onSnapshot(snap => {
+				if (snap.docs.length > 0) {
+					const realityChecks = getItemsOnQuery(snap)
 
-				setRealityChecks(realityChecks)
+					setRealityChecks(realityChecks)
+				}
 			})
 	}
 
@@ -84,17 +89,39 @@ export default function Home () {
 			.collection('dreams')
 			.where('dreamUserID', '==', user.userID)
 			.where('createdDate', '==', today)
-			.get()
-			.then(snapshot => {
-				const todayDream = getItemsOnQuery(snapshot)
+			.onSnapshot(snap => {
+				if (snap.docs.length > 0) {
+					const todayDream = getItemsOnQuery(snap)
 
-				if (todayDream.length > 0) {
-					setTodayDream(todayDream[0])
+					if (todayDream.length > 0) {
+						setTodayDream(todayDream[0])
+					}
 				}
 			})
 	}
 
-	function handleRealityCheckClick () {
+	function handleRealityCheck () {
+		firestore()
+			.collection('today-reality-checks')
+			.doc(user.userID)
+			.collection('checks')
+			.doc(realityCheckId)
+			.update({
+				status: 'done'
+			})
+			.then(() => {
+				alert('conseguiu')
+				setModalVisible(true)
+			})
+			.catch(error => console.log(error))
+
+	}
+
+	function handleRealityCheckClick (title, description, realityCheckID, status) {
+		setModalTitle(title)
+		setModalDescription(description)
+		setModalStatus(status)
+		setRealityCheckId(realityCheckID)
 		setModalVisible(true)
 	}
 
@@ -152,7 +179,7 @@ export default function Home () {
 						? realityChecks.map(item => (
 							<CheckItem
 								key={item.id}
-								onPress={() => handleRealityCheckClick()}
+								onPress={() => handleRealityCheckClick(item.title, item.description, item.id, item.status)}
 								title={item.title}
 								description={item.description}
 								status={item.status}
@@ -233,29 +260,66 @@ export default function Home () {
 				<Space height={30} />
 			</ScrollView>
 
-			
-				<Modal
-					animationType='slide'
-					transparent={true}
-					visible={modalVisible}
-					onRequestClose={() => {
-						setModalVisible(!modalVisible);
-					}}
+			<Modal
+				animationType='slide'
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					setModalVisible(!modalVisible);
+				}}
+			>
+				<Wrapper
+					align='center'
+					bg={COLORS.white}
+					mt={200}
+					mb={200}
+					ml={30}
+					mr={30}
+					p={15}
+					radius={15}
+					borderColor={COLORS.secundary}
+					borderWidth={2}
 				>
-					<Wrapper
+					<Row
 						align='center'
-						flex={1}
-						justify='center'
-						bg={COLORS.white}
-						mt={200}
-						mb={200}
-						ml={30}
-						mr={30}
-						radius={20}
+						block
+						justify='flex-end'
 					>
-						<SimpleText color='#000'>Modalllll ai ai</SimpleText>
-					</Wrapper>
-				</Modal>
+						<TouchableOpacity
+							color='#000'
+							hitSlop={{ right: 10, top: 10, left: 10, bottom: 10 }}
+							onPress={() => setModalVisible(false)}
+						>
+							<Icon.Close fill={COLORS.secundary} width={wp('6%')} height={hp('6%')} />
+						</TouchableOpacity>
+					</Row>
+					<Space height={10} />
+					<Title
+						color={COLORS.secundary}
+						fontsize={6}
+						textAlign='center'
+					>
+						{modalTitle}
+					</Title>
+					<Space height={20} />
+					<SimpleText
+						color='#000'
+						fontsize={4}
+					>
+						{modalDescription}
+					</SimpleText>
+					<Space height={20} />
+					<Row>
+						<Button
+							title='Feito!'
+							backgroundColor={COLORS.secundary}
+							textcolor={COLORS.white}
+							onPress={handleRealityCheck}
+							disabled={modalStatus === 'done'}
+						/>
+					</Row>
+				</Wrapper>
+			</Modal>
 			
 		</Wrapper>
 	)

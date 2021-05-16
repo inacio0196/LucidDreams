@@ -14,8 +14,10 @@ import NightRain from './night-rain.svg';
 import CalendarWeek from './calendar-week.svg';
 import EmojiSmiley from './emoji-smiley.svg';
 import EmojiReally from './emoji-really.svg';
+import Close from './close.svg';
 
 export {
+	Close,
 	EmojiReally,
 	EmojiSmiley,
 	CalendarWeek,

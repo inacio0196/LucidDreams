@@ -36,12 +36,16 @@ export const GlobalProps = styled.View`
 	${({ rtr }) => rtr ? `border-top-right-radius: ${rtr}px;` : null}
 	${({ rbl }) => rbl ? `border-bottom-left-radius: ${rbl}px;` : null}
 	${({ rbr }) => rbr ? `border-bottom-right-radius: ${rbr}px;` : null}
+	/* Border */
+	${({ borderColor }) => borderColor ? `border-color: ${borderColor};` : null}
+	${({ borderWidth }) => borderWidth ? `border-color: ${wp('borderWidth%')};` : null}
 `;
 
 export const Title = styled.Text`
 	color: ${({ color }) => color ? color : COLORS.white};
-	font-size: ${wp('8%')}px;
+	font-size: ${({ fontsize }) => fontsize ? wp(`${fontsize}%`) :  wp('8%')}px;
 	${({ bold }) => bold ? 'font-weight: bold' : null};
+	${({ textAlign }) => textAlign ? `text-align: ${textAlign}` : null}
 `;
 
 export const SimpleText = styled.Text`
