@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, ScrollView } from 'react-native';
 import { useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 
@@ -37,6 +37,10 @@ export default function RegisterDream () {
         createdAt: dayjs().format(),
         updatedAt: dayjs().format(),
       })
+      .then(() => {
+        alert('sonho registrado com sucesso!')
+      })
+      .catch(error => console.log(error))
   }
 
   return (
@@ -51,53 +55,57 @@ export default function RegisterDream () {
         <Title>Registrar Sonho</Title>
       </Header>
       <Space height={20} />
-      <Content>
-        <CustomInput
-          placeholder='Título'
-          value={title}
-          onChangeText={setTitle}
-        />
-        <Space height={20} />
-        <Row
-          justify='flex-start'
-        >
-          <SimpleText fontsize={4}>{dayjs().format('MMM D[,] YYYY')}</SimpleText>
-        </Row>
-        <Space height={20} />
-        <CustomInput
-          placeholder='Descrição do sonho'
-          value={description}
-          onChangeText={setDescription}
-          returnKeyType='none'
-          multiline={true}
-        />
-        <Space height={20} />
-        <SimpleText
-          fontsize={5}
-        >
-          Como estava o clima dentro do seu sonho?
-        </SimpleText>
-        <Space height={20} />
-        <ClimateOptions
-          onSelectClimate={setDreamClimate}
-        />
-        <Space height={20} />
-        <SimpleText
-          fontsize={5}
-        >
-          Conseguiu ter controle do sonho mesmo que por um breve momento?
-        </SimpleText>
-        <Space height={20} />
-        <ReactionSelect
-          onReallySelect={setIsLucid}
-        />
-        <Space height={20} />
-        <Button
-          textcolor={COLORS.green}
-          title='Registrar'
-          onPress={registerDream}
-        />
-      </Content>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+      >
+        <Content>
+          <CustomInput
+            placeholder='Título'
+            value={title}
+            onChangeText={setTitle}
+          />
+          <Space height={20} />
+          <Row
+            justify='flex-start'
+          >
+            <SimpleText fontsize={4}>{dayjs().format('MMM D[,] YYYY')}</SimpleText>
+          </Row>
+          <Space height={20} />
+          <CustomInput
+            placeholder='Descrição do sonho'
+            value={description}
+            onChangeText={setDescription}
+            returnKeyType='none'
+            multiline={true}
+          />
+          <Space height={20} />
+          <SimpleText
+            fontsize={5}
+          >
+            Como estava o clima dentro do seu sonho?
+          </SimpleText>
+          <Space height={20} />
+          <ClimateOptions
+            onSelectClimate={setDreamClimate}
+          />
+          <Space height={20} />
+          <SimpleText
+            fontsize={5}
+          >
+            Conseguiu ter controle do sonho mesmo que por um breve momento?
+          </SimpleText>
+          <Space height={20} />
+          <ReactionSelect
+            onReallySelect={setIsLucid}
+          />
+          <Space height={20} />
+          <Button
+            textcolor={COLORS.green}
+            title='Registrar'
+            onPress={registerDream}
+          />
+        </Content>
+      </ScrollView>
     </Wrapper>
   )
 }
