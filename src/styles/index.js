@@ -38,7 +38,7 @@ export const GlobalProps = styled.View`
 	${({ rbr }) => rbr ? `border-bottom-right-radius: ${rbr}px;` : null}
 	/* Border */
 	${({ borderColor }) => borderColor ? `border-color: ${borderColor};` : null}
-	${({ borderWidth }) => borderWidth ? `border-color: ${wp('borderWidth%')};` : null}
+	${({ borderWidth }) => borderWidth ? `border-color: ${wp(`${borderWidth}%`)};` : null}
 `;
 
 export const Title = styled.Text`
@@ -60,7 +60,8 @@ export const Wrapper = styled(GlobalProps)`
 	${({ align }) => align ? `align-items: ${align};` : null}
 	${({ justify }) => justify ? `justify-content: ${justify};` : null}
 	${({ bg }) => bg ? `background-color: ${bg};` : null}
-	${({ position }) => position ? `position: ${position};` : null} 
+	${({ position }) => position ? `position: ${position};` : null}
+	/* ${({ borderColor }) => borderColor ? `border-color: ${borderColor};` : null} */
 `;
 
 export const Content = styled(GlobalProps)`

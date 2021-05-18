@@ -4,6 +4,7 @@ import { COLORS } from '../../styles';
 
 export const TouchableButton = styled.TouchableOpacity`
 	background-color: ${({ backgroundColor }) => backgroundColor ? backgroundColor : COLORS.white};
+	${({ disabled }) => disabled ? `background-color: ${COLORS.gray}` : null}
 	padding: ${wp('3%')}px;
 	${({ block }) => block ? 'width: 100%' : null};
 	align-items: center;

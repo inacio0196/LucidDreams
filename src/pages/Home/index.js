@@ -311,7 +311,7 @@ export default function Home () {
 					<Space height={20} />
 					<Row>
 						<Button
-							title='Feito!'
+							title={modalStatus === 'done' ? 'Concluído' : 'Feito!'}
 							backgroundColor={COLORS.secundary}
 							textcolor={COLORS.white}
 							onPress={handleRealityCheck}
