@@ -110,11 +110,9 @@ export default function Home () {
 				status: 'done'
 			})
 			.then(() => {
-				alert('conseguiu')
-				setModalVisible(true)
+				setModalVisible(false)
 			})
 			.catch(error => console.log(error))
-
 	}
 
 	function handleRealityCheckClick (title, description, realityCheckID, status) {
@@ -168,9 +166,9 @@ export default function Home () {
 						<Title>Lembretes</Title>
 						<Title
 							bold
-							color={COLORS.secundaryDark}
+							color={COLORS.white}
 						>
-							{realityChecks.length}
+							{realityChecks.filter(check => check.status === 'todo').length} / {realityChecks.length}
 						</Title>
 					</Row>
 					<Space height={10} />
