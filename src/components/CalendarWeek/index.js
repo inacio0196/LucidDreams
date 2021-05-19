@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { FlatList, Dimensions } from 'react-native';
+import { FlatList, Dimensions, ActivityIndicator } from 'react-native';
 import dayjs from 'dayjs';
 
 import { DayContainer } from './styles';
@@ -10,11 +10,12 @@ import { Icon } from '../../components';
 const localePtBr = require('dayjs/locale/pt-br')
 dayjs.locale(localePtBr)
 
-export const CalendarWeek = () => {
+export const CalendarWeek = ({ onClickDate }) => {
   // States
   const [month, setMonth] = useState([])
   // FrontStates
   const [showDays, setShowDays] = useState(false)
+  const [refresh, setRefresh] = useState(false)
   
   // Constants
   const SCREEN_WIDTH = Dimensions.get('window').width
@@ -23,12 +24,12 @@ export const CalendarWeek = () => {
   const ACTUAL_MONTH_NAME = dayjs().format('MMMM')
 
   const flatListRef = useRef(null)
-  
+
   // Effects
   useEffect(() => {
     generateMonthDays()
   }, [])
-
+  
   // Functions
   function generateMonthDays () {
     const year = dayjs().format('YYYY')
@@ -42,30 +43,47 @@ export const CalendarWeek = () => {
       .from({ length: numberDaysOfMonth })
       .map((_, day) => `${year}-${month}-${day + 1}`)
       .map((day, index) => ({
-        key: `${index}`,
+        key: index,
         day_nick: dayjs(day).format('ddd'),
         day_name: dayjs(day).format('dddd'),
         day_of_month: dayjs(day).format('D'),
         date: dayjs(day),
         isToday: dayjs(day).isToday(),
+        isSelected: false,
       }))
 
     setMonth(daysOfMonth)
   }
 
-  function goToCurrentDate () {
-    const todayIndex = month.findIndex(day => day.isToday)
-    
+  function handleClickDate (date) {
+    const daysOfMonth = month.map((day, index) => {
+      if (date.key === day.key) {
+        return {
+          ...day,
+          isSelected: true
+        }
+      } else {
+        return {
+          ...day,
+          isSelected: false
+        } 
+      }
+    })
+
+    setMonth(daysOfMonth)
+    setRefresh(prevState => !prevState)
+
+    goToSelectedDate(date)
+    onClickDate(date.date)
+  }
+
+  function goToSelectedDate (date) {
     flatListRef.current.scrollToItem({
       animated: true,
       viewPosition: 0,
-      item: month[todayIndex - 2]
+      item: month[date.key - 2]
     })
   }
-
-  setTimeout(() => {
-    goToCurrentDate()
-  }, 100)
   
   return (
     <Content>
@@ -96,37 +114,59 @@ export const CalendarWeek = () => {
         </Row>
       </Content>
       <Space height={10} />
-      <FlatList
-        data={month}
-        horizontal
-        ref={flatListRef}
-        showsHorizontalScrollIndicator={false}
-        snapToAlignment='center'
-        getItemLayout={(data, index) => ({
-          // Max 5 items visibles at once
-          length: SCREEN_WIDTH / 5, offset: SCREEN_WIDTH / 5 * index, index
-        })}
-        snapToInterval={SCREEN_WIDTH / 5}
-        keyExtractor={item => item.key}
-        renderItem={({ item }) => (
-          <DayContainer
-            isToday={item.isToday}
-          >
-            <Title
-              bold
-              color={item.isToday ? COLORS.blue : 'white'}
-            >
-              {item.day_of_month}
-            </Title>
-            <SimpleText
-              bold
-              color={item.isToday ? COLORS.blue : 'white'}
-            >
-              {item.day_nick}
-            </SimpleText>
-          </DayContainer>
-        )}
-      />
+      {
+        month.length > 0
+        ? (
+          <FlatList
+            data={month}
+            extraData={refresh}
+            horizontal
+            ref={flatListRef}
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment='center'
+            initialScrollIndex={parseInt(ACTUAL_DAY) - 3}
+            getItemLayout={(data, index) => ({
+              // Max 5 items visibles at once
+              length: SCREEN_WIDTH / 5,
+              offset: SCREEN_WIDTH / 5 * index,
+              index
+            })}
+            snapToInterval={SCREEN_WIDTH / 5}
+            keyExtractor={item => item.key}
+            renderItem={({ item }) => (
+              <DayContainer
+                isToday={item.isToday}
+                isSelected={item.isSelected}
+                onPress={() => handleClickDate(item)}
+              >
+                <Title
+                  bold
+                  color={
+                    item.isSelected
+                      ? COLORS.blue
+                      : item.isSelected ? COLORS.blue
+                      : item.isToday ? COLORS.white : ''
+                  }
+                >
+                  {item.day_of_month}
+                </Title>
+                <SimpleText
+                  bold
+                  color={
+                    item.isSelected
+                      ? COLORS.blue
+                      : item.isSelected ? COLORS.blue
+                      : item.isToday ? COLORS.white : ''
+                  }
+                >
+                  {item.day_nick}
+                </SimpleText>
+              </DayContainer>
+            )}
+          />
+        )
+        : <ActivityIndicator animating={true} color={COLORS.white} />
+      }
     </Content>
   )
 }

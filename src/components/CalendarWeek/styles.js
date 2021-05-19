@@ -4,10 +4,25 @@ import { COLORS } from '../../styles';
 
 export const CalendarContainer = styled.View``;
 
-export const DayContainer = styled.View`
+export const DayContainer = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
-  background-color: ${({ isToday }) => isToday ? COLORS.white : 'transparent'};
+  ${
+    ({ isToday }) => isToday
+    ? `
+      border-width: ${wp('0.5%')}px;
+      border-color: ${COLORS.white};
+      background-color: transparent;
+    `
+    : null
+  }
+  ${
+    ({ isSelected }) => isSelected
+    ? `
+      background-color: ${COLORS.white};
+    ` 
+    : null
+  };
   margin-right: ${wp('1%')}px;
   margin-left: ${wp('1%')}px;
   height: ${hp('17%')}px;
