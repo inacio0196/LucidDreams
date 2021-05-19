@@ -127,6 +127,10 @@ export default function Home () {
 		navigation.navigate('DreamHistory')
 	}
 
+	function goToDreamView () {
+		navigation.navigate('DreamView', { dream: todayDream })
+	}
+
 	return (
 		<Wrapper
 			pt={15}
@@ -168,7 +172,7 @@ export default function Home () {
 							bold
 							color={COLORS.white}
 						>
-							{realityChecks.filter(check => check.status === 'todo').length} / {realityChecks.length}
+							{realityChecks.length - realityChecks.filter(check => check.status === 'todo').length} / {realityChecks.length}
 						</Title>
 					</Row>
 					<Space height={10} />
@@ -220,7 +224,7 @@ export default function Home () {
 								title={todayDream.title}
 								createdAt={todayDream.createdAt}
 								climate={todayDream.dreamClimate}
-								onPressReadDream={goToDreamHistory}
+								onPressReadDream={goToDreamView}
 							/>
 						)
 						: (
@@ -276,7 +280,7 @@ export default function Home () {
 					p={15}
 					radius={15}
 					borderColor={COLORS.secundary}
-					borderWidth={2}
+					borderWidth={0.5}
 				>
 					<Row
 						align='center'

@@ -38,7 +38,7 @@ export const GlobalProps = styled.View`
 	${({ rbr }) => rbr ? `border-bottom-right-radius: ${rbr}px;` : null}
 	/* Border */
 	${({ borderColor }) => borderColor ? `border-color: ${borderColor};` : null}
-	${({ borderWidth }) => borderWidth ? `border-color: ${wp(`${borderWidth}%`)};` : null}
+	${({ borderWidth }) => borderWidth ? `border-width: ${wp(`${borderWidth}%`)}px;` : null}
 `;
 
 export const Title = styled.Text`
