@@ -52,7 +52,7 @@ export default function DreamHistory () {
   
   function getDreamOfDate (date) {
     const dateQuery = dayjs(date).format('YYYY-MM-DD')
-    
+
     firestore()
       .collection('dreams')
       .where('createdDate', '==', dateQuery)
@@ -125,8 +125,9 @@ export default function DreamHistory () {
               <SimpleText
                 color='#FFF9'
                 fontsize={4}
+                textAlign='center'
               >
-                Você não possuí nenhum sonho cadastrado hoje
+                Você não possuí nenhum sonho cadastrado para está data
               </SimpleText>
             </Row>
           )
