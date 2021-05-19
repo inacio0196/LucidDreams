@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../pages/Home';
 import DreamHistory from '../pages/DreamHistory';
 import RegisterDream from '../pages/RegisterDream';
+import DreamView from '../pages/DreamView';
 
 // Stack
 const AuthStack = createStackNavigator();
@@ -45,6 +46,11 @@ const AuthRoutes = () => {
       <AuthStack.Screen
         name='RegisterDream'
         component={RegisterDream}
+        options={horizontalAnimation}
+      />
+      <AuthStack.Screen
+        name='DreamView'
+        component={DreamView}
         options={horizontalAnimation}
       />
       {/* <AuthStack.Screen

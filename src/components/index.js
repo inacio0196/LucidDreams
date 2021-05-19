@@ -9,3 +9,5 @@ export * from './CalendarWeek';
 export * from './PageLoader';
 export * from './ClimateOptions';
 export * from './ReactionSelect';
+export * from './GetClimateIcon';
+export * from './GetLucidIcon';

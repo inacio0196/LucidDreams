@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 
 import { CardContainer, CardDate, CardTitle, CardButtonText, ReadButton } from './styles';
 import { Column, Row, Space } from '../../styles';
-import { Icon } from '../../components';
+import { Icon, GetClimateIcon } from '../../components';
 
 const localePtBr = require('dayjs/locale/pt-br')
 const relativeTime = require('dayjs/plugin/relativeTime')
@@ -12,28 +12,6 @@ dayjs.extend(relativeTime)
 dayjs.locale(localePtBr)
 
 export const DreamCard = ({ onPressReadDream, isRecent, title, climate, description, createdAt }) => {
-  // CONSTANTS
-  const ICON_WIDTH = wp('20%')
-  const ICON_HEIGHT = wp('18%')
-  
-  // Functions
-  function getDreamClimate (climate) {
-    let climateKey = climate
-
-    if (/\//g.test(climateKey)) {
-      climateKey = climateKey.replace('/', '_')
-    }
-
-    const climates = {
-      day: <Icon.Sun width={ICON_WIDTH} height={ICON_HEIGHT} />,
-      day_rain: <Icon.SunRain width={ICON_WIDTH} height={ICON_HEIGHT} />,
-      night: <Icon.Sky width={ICON_WIDTH} height={ICON_HEIGHT} />,
-      night_rain: <Icon.NightRain width={ICON_WIDTH} height={ICON_HEIGHT} />,
-    }
-    
-    return climates[climateKey]
-  }
-  
   return (
     <CardContainer>
       <Row
@@ -48,7 +26,7 @@ export const DreamCard = ({ onPressReadDream, isRecent, title, climate, descript
           </CardDate>
           <CardTitle>{title}</CardTitle>
         </Column>
-        {getDreamClimate(climate)}
+        <GetClimateIcon climate={climate} />
       </Row>
       <Space height={10} />
       <Row
