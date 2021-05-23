@@ -52,6 +52,7 @@ export const SimpleText = styled.Text`
 	color: ${({ color }) => color ? color : COLORS.white};
 	${({ fontsize }) => fontsize ? `font-size: ${wp(`${fontsize}%`)}px;` : null}
 	${({ bold }) => bold ? 'font-weight: bold' : null};
+	${({ textAlign }) => textAlign ? `text-align: ${textAlign};` : null};
 `;
 
 export const Wrapper = styled(GlobalProps)`
