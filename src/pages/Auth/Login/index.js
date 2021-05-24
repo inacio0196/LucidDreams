@@ -24,25 +24,25 @@ export default function Login () {
 	// Functions
 	function authenticate () {
 			auth()
-			.signInWithEmailAndPassword('rafael.inacio0196@gmail.com', '123456')
-			.then(() => {
-				dispatch(login({
-					name: 'Rafael Inácio',
-					birthday: '16/06/1998',
-					userID: auth().currentUser.uid,
-				}))
-			})
-			.catch(error => {
-				if (error.code === 'auth/email-already-in-use') {
-					console.log('That email address is already in use!')
-				}
-		
-				if (error.code === 'auth/invalid-email') {
-					console.log('That email address is invalid!')
-				}
-		
-				console.error(error)
-			})
+				.signInWithEmailAndPassword(email, password)
+				.then(({ user }) => {
+					dispatch(login({
+						name: 'Usuário Nome',
+						email: user.email,
+						userID: user.uid,
+					}))
+				})
+				.catch(error => {
+					if (error.code === 'auth/email-already-in-use') {
+						console.log('That email address is already in use!')
+					}
+
+					if (error.code === 'auth/invalid-email') {
+						console.log('That email address is invalid!')
+					}
+
+					console.error(error)
+				})
 	}
 	
 	return (

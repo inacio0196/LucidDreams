@@ -273,14 +273,14 @@ export default function Home () {
 				<Wrapper
 					align='center'
 					bg={COLORS.white}
-					mt={200}
-					mb={200}
-					ml={30}
-					mr={30}
-					p={15}
-					radius={15}
+					mt={wp('50%')}
+					mb={wp('50%')}
+					ml={wp('8%')}
+					mr={wp('8%')}
+					p={wp('5%')}
+					radius={wp('8%')}
 					borderColor={COLORS.secundary}
-					borderWidth={0.5}
+					borderWidth={wp('0.3%')}
 				>
 					<Row
 						align='center'
